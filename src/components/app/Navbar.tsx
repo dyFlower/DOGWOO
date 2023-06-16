@@ -1,22 +1,28 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Pow from '../../assets/icons/pow.png';
 import DefaultProfile from '../../assets/icons/DefaultProfile.png';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const Navbar = () => {
+  const location = useLocation();
+  const [currentPage, setCurrentPage] = useState('');
   const navigation = [
-    { name: '자유 게시판', link: '/board', current: false },
-    { name: '팁 & 정보', link: '/tipinfo', current: false },
-    { name: '산책 메이트', link: '/mate', current: false },
-    { name: '산책일기', link: '/diary', current: false },
+    { name: '자유 게시판', link: '/board' },
+    { name: '팁 & 정보', link: '/tipinfo' },
+    { name: '산책 메이트', link: '/mate' },
+    { name: '산책일기', link: '/diary' },
   ];
+  
+  useEffect(() => {
+    setCurrentPage(location.pathname);
+  }, [location.pathname]);
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
   }
-  
+
   return (
     <Disclosure as='nav' className='bg-darkgreen'>
       {({ open }: any) => (
@@ -50,12 +56,11 @@ const Navbar = () => {
                         key={item.name}
                         to={item.link}
                         className={classNames(
-                          item.current
-                            ? 'bg-gray-900 text-white'
+                          currentPage === item.link
+                            ? 'bg-gray-700 text-white'
                             : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                           'rounded-md px-3 py-2 text-sm font-medium',
                         )}
-                        aria-current={item.current ? 'page' : undefined}
                       >
                         {item.name}
                       </Link>
@@ -148,12 +153,11 @@ const Navbar = () => {
                   as={Link}
                   to={item.link}
                   className={classNames(
-                    item.current
+                    currentPage === item.name
                       ? 'bg-gray-900 text-white'
                       : 'text-gray-300 hover:bg-gray-700 hover:text-white',
                     'block rounded-md px-3 py-2 text-base font-medium',
                   )}
-                  aria-current={item.current ? 'page' : undefined}
                 >
                   {item.name}
                 </Disclosure.Button>
