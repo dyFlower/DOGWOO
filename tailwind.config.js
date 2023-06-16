@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         darkgreen: '#0c140e',
         green: '#82bf37',
+        hovergreen: '#bde68c',
       },
     },
   },
