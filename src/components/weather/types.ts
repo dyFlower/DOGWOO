@@ -4,6 +4,7 @@ export type WeatherData = {
     temp: number;
   };
   weather: {
-    description: string;
+    main: string;
+    icon: string;
   }[];
 };

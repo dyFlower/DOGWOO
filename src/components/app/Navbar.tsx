@@ -4,6 +4,7 @@ import DefaultProfile from '../../assets/icons/DefaultProfile.png';
 import { Fragment, useEffect, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import useWeather from '../weather/useWeather';
 
 const Navbar = () => {
   const location = useLocation();
@@ -14,7 +15,7 @@ const Navbar = () => {
     { name: '산책 메이트', link: '/mate' },
     { name: '산책일기', link: '/diary' },
   ];
-  
+
   useEffect(() => {
     setCurrentPage(location.pathname);
   }, [location.pathname]);
@@ -22,6 +23,8 @@ const Navbar = () => {
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
   }
+
+  const { data, isLoading } = useWeather();
 
   return (
     <Disclosure as='nav' className='bg-darkgreen'>
@@ -71,10 +74,19 @@ const Navbar = () => {
               <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
                 <button
                   type='button'
-                  className='rounded-full bg-green p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'
+                  className='flex items-center rounded-full bg-green p-1 px-3 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'
                 >
                   <span className='sr-only'>날씨</span>
-                  날씨아이콘
+                  {isLoading ? 'Loading...' : data?.weather[0].main}
+                  {isLoading ? (
+                    ''
+                  ) : (
+                    <img
+                      className='h-8 w-8'
+                      src={`https://openweathermap.org/img/wn/${data?.weather[0].icon}@2x.png`}
+                      alt='날씨'
+                    />
+                  )}
                 </button>
 
                 {/* Profile dropdown */}

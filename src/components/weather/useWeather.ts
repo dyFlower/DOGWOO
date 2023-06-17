@@ -1,16 +1,8 @@
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { queryKeys } from '../../react-query/constants';
+import { WeatherData } from './types';
 
-interface WeatherData {
-  name: string;
-  main: {
-    temp: number;
-  };
-  weather: {
-    description: string;
-  }[];
-}
 
 const getWeatherByLocation = async (lat: number, lon: number) => {
   const apiKey = process.env.REACT_APP_WEATHER_KEY;
