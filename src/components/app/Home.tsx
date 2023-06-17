@@ -5,7 +5,7 @@ function Home() {
   return (
     <>
       <div>
-        <img className='bg-center opacity-80' src={HomeBg} alt='배경화면' />
+        <img className='bg-center' src={HomeBg} alt='배경화면' />
 
         <div className='bg-white sm:absolute top-1/3 left-20 rounded-xl '>
           <div className='mb-10'>
