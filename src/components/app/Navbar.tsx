@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import useWeather from '../weather/useWeather';
+import { translateWeather } from '../weather/translate';
 
 const Navbar = () => {
   const location = useLocation();
@@ -77,7 +78,7 @@ const Navbar = () => {
                   className='flex items-center rounded-full bg-green p-1 px-3 text-white hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'
                 >
                   <span className='sr-only'>날씨</span>
-                  {isLoading ? 'Loading...' : data?.weather[0].main}
+                  {isLoading ? 'Loading...' : translateWeather(data?.weather[0].main)}
                   {isLoading ? (
                     ''
                   ) : (
