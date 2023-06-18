@@ -1,7 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { auth, signInWithEmailAndPassword } from '../../firebase/firebase';
 
 function SignIn() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleSignIn = (email: string, password: string) => {
+    signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+      // Signed in
+      const user = userCredential.user;
+      console.log(user);
+    });
+  };
+
   return (
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
@@ -12,10 +24,10 @@ function SignIn() {
         </div>
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <form className='space-y-6' action='#' method='POST'>
+          <form className='space-y-6' action='#' onSubmit={() => handleSignIn(email, password)}>
             <div>
               <label htmlFor='email' className='block text-sm font-medium leading-6 text-gray-900'>
-                Email
+                이메일
               </label>
               <div className='mt-2'>
                 <input
@@ -23,6 +35,7 @@ function SignIn() {
                   name='email'
                   type='email'
                   autoComplete='email'
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                   className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-sm sm:leading-6'
                 />
@@ -35,7 +48,7 @@ function SignIn() {
                   htmlFor='password'
                   className='block text-sm font-medium leading-6 text-gray-900'
                 >
-                  Password
+                  비밀번호
                 </label>
                 <div className='text-sm'>
                   <a href='#' className='font-semibold text-green hover:text-hovergreen'>
@@ -49,6 +62,7 @@ function SignIn() {
                   name='password'
                   type='password'
                   autoComplete='current-password'
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                   className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green sm:text-sm sm:leading-6'
                 />

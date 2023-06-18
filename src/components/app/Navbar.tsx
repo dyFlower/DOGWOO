@@ -97,13 +97,13 @@ const Navbar = () => {
                     leaveTo='transform opacity-0 scale-95'
                   >
                     <Popover.Panel className='absolute z-10 top-2 right-1'>
-                      <div className='rounded-md bg-white p-5 flex-row'>
+                      <div className='rounded-md bg-gray-100 p-5 flex-row'>
                         <span className='block font-bold text-3xl'>{data?.name}</span>
                         <span className='block font-semibold text-2xl text-center'>
                           {data?.main.temp}°
                         </span>
                         <div>
-                          <span className='text-gray-400'>체감 : </span>{' '}
+                          <span className='text-gray-400'>체감 : </span>
                           <span className=''>{data?.main.feels_like}°</span>
                         </div>
                         <div>

@@ -7,6 +7,7 @@ import TipInfo from '../board/TipInfo';
 import MateBoard from '../board/MateBoard';
 import Profile from '../user/Profile';
 import DogProfile from '../user/DogProfile';
+import SignUp from '../user/SignUp';
 
 const Router = () => {
   return (
@@ -17,6 +18,7 @@ const Router = () => {
       <Route path='/tipinfo' element={<TipInfo />}></Route>
       <Route path='/mate' element={<MateBoard />}></Route>
       <Route path='/signin' element={<SignIn />}></Route>
+      <Route path='/signup' element={<SignUp />}></Route>
       <Route path='/profile'>
         <Route path=':id' element={<Profile />}></Route>
         <Route path=':dog' element={<DogProfile />}></Route>
