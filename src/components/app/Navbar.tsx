@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Pow from '../../assets/icons/pow.png';
 import DefaultProfile from '../../assets/icons/DefaultProfile.png';
 import { Fragment, useEffect, useState } from 'react';
@@ -11,11 +11,11 @@ import { auth } from '../../firebase/firebase';
 const Navbar = () => {
   const location = useLocation();
   const [currentPage, setCurrentPage] = useState('');
+  const navigate = useNavigate();
   const navigation = [
     { name: '자유 게시판', link: '/board' },
     { name: '팁 & 정보', link: '/tipinfo' },
     { name: '산책 메이트', link: '/mate' },
-    { name: '산책일기', link: '/diary' },
   ];
 
   useEffect(() => {
@@ -27,6 +27,12 @@ const Navbar = () => {
   }
 
   const { data, isLoading } = useWeather();
+
+  const handleSignOut = () => {
+    auth.signOut().then(() => {
+      navigate('/');
+    });
+  };
 
   return (
     <Disclosure as='nav' className='bg-darkgreen'>
@@ -158,28 +164,27 @@ const Navbar = () => {
                         <Menu.Item>
                           {({ active }: any) => (
                             <Link
-                              to='/profile/:id/:dog'
+                              to='diary'
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700',
                               )}
                             >
-                              멍멍이 프로필
+                              산책 일기
                             </Link>
                           )}
                         </Menu.Item>
                         <Menu.Item>
                           {({ active }: any) => (
-                            <Link
-                              to='/'
-                              onClick={() => auth.signOut()}
+                            <button
+                              onClick={handleSignOut}
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700',
                               )}
                             >
                               로그아웃
-                            </Link>
+                            </button>
                           )}
                         </Menu.Item>
                       </Menu.Items>

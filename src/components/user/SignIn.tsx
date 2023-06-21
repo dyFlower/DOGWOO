@@ -9,8 +9,9 @@ function SignIn() {
   const navigate = useNavigate();
 
   const handleSignIn = (email: string, password: string) => {
-    signInWithEmailAndPassword(auth, email, password);
-    navigate('/');
+    signInWithEmailAndPassword(auth, email, password).then(() => {
+      navigate('/');
+    });
   };
   return (
     <>
@@ -22,7 +23,14 @@ function SignIn() {
         </div>
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <form className='space-y-6' action='#' onSubmit={() => handleSignIn(email, password)}>
+          <form
+            className='space-y-6'
+            action='#'
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSignIn(email, password);
+            }}
+          >
             <div>
               <label htmlFor='email' className='block text-sm font-medium leading-6 text-gray-900'>
                 이메일
