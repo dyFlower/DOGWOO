@@ -6,9 +6,9 @@ import { Disclosure, Menu, Popover, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import useWeather from '../weather/useWeather';
 import { translateWeather } from '../weather/translate';
+import { auth } from '../../firebase/firebase';
 
 const Navbar = () => {
-  const user = false;
   const location = useLocation();
   const [currentPage, setCurrentPage] = useState('');
   const navigation = [
@@ -74,7 +74,7 @@ const Navbar = () => {
                 </div>
               </div>
               <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
-                <Popover>
+                <Popover className='z-10'>
                   <Popover.Button className='flex items-center rounded-full bg-green p-1 px-3 text-white hover:bg-hovergreen focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
                     <span className='sr-only'>날씨</span>
                     {isLoading ? 'Loading...' : translateWeather(data?.weather[0].main)}
@@ -120,7 +120,7 @@ const Navbar = () => {
                 </Popover>
 
                 {/* Profile dropdown */}
-                {user ? (
+                {auth.currentUser ? (
                   <Menu as='div' className='relative ml-3'>
                     <div>
                       <Menu.Button className='flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
@@ -172,6 +172,7 @@ const Navbar = () => {
                           {({ active }: any) => (
                             <Link
                               to='/'
+                              onClick={() => auth.signOut()}
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700',
