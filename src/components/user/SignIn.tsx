@@ -57,9 +57,9 @@ function SignIn() {
                   비밀번호
                 </label>
                 <div className='text-sm'>
-                  <a href='#' className='font-semibold text-green hover:text-hovergreen'>
+                  <Link to='/reset' className='font-semibold text-green hover:text-hovergreen'>
                     비밀번호 찾기
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className='mt-2'>
