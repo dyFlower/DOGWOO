@@ -1,16 +1,28 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { auth } from '../../firebase/firebase';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { auth, database } from '../../firebase/firebase';
+import { ref, set } from 'firebase/database';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [nickName, setNickName] = useState('');
+  const [petName, setPetName] = useState('');
+  const navigate = useNavigate();
 
   const handleSignUp = (email: string, password: string) => {
     createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
+      .then(() => {
+        const user = auth.currentUser;
+        set(ref(database, 'users/' + user?.uid), {
+          emial: email,
+          nickname: nickName,
+          petname: petName,
+        });
+      })
+      .then(() => {
+        navigate('/');
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -28,7 +40,14 @@ const SignUp = () => {
         </div>
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <form className='space-y-3' action='#' onSubmit={() => handleSignUp(email, password)}>
+          <form
+            className='space-y-3'
+            action='#'
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSignUp(email, password);
+            }}
+          >
             <div>
               <label
                 htmlFor='nickname'
@@ -41,6 +60,7 @@ const SignUp = () => {
                   id='nickname'
                   name='nickname'
                   type='text'
+                  onChange={(e) => setNickName(e.target.value)}
                   required
                   className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-sm sm:leading-6'
                 />
@@ -58,6 +78,7 @@ const SignUp = () => {
                   id='dogname'
                   name='dogname'
                   type='text'
+                  onChange={(e) => setPetName(e.target.value)}
                   //   required
                   className='block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400  sm:text-sm sm:leading-6'
                 />
