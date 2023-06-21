@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { auth, signInWithEmailAndPassword } from '../../firebase/firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { auth } from '../../firebase/firebase';
 
 function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleSignIn = (email: string, password: string) => {
-    signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-      // Signed in
-      const user = userCredential.user;
-      console.log(user);
-    });
+    signInWithEmailAndPassword(auth, email, password);
+    navigate('/');
   };
-
   return (
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
