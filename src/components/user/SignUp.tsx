@@ -16,7 +16,7 @@ const SignUp = () => {
       .then(() => {
         const user = auth.currentUser;
         set(ref(database, 'users/' + user?.uid), {
-          emial: email,
+          email: email,
           nickname: nickName,
           petname: petName,
         });

@@ -6,9 +6,9 @@ import SignIn from '../user/SignIn';
 import TipInfo from '../board/TipInfo';
 import MateBoard from '../board/MateBoard';
 import Profile from '../user/Profile';
-import DogProfile from '../user/DogProfile';
 import SignUp from '../user/SignUp';
 import ResetPassword from '../user/ResetPassword';
+import EditProfile from '../user/EditProfile';
 
 const Router = () => {
   return (
@@ -23,8 +23,8 @@ const Router = () => {
       <Route path='/reset' element={<ResetPassword />}></Route>
       <Route path='/profile'>
         <Route path=':id' element={<Profile />}></Route>
-        <Route path=':dog' element={<DogProfile />}></Route>
       </Route>
+      <Route path='/editProfile' element={<EditProfile />}></Route>
     </Routes>
   );
 };
