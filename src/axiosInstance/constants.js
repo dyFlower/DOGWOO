@@ -1,0 +1,1 @@
+export const infoUrl = 'http://api.kcisa.kr/openapi/service/rest/convergence2019/getConver03';
