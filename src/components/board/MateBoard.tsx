@@ -1,6 +1,7 @@
 import React from 'react';
 import dummy from './dummy.json';
 import SearchForm from '../common/SearchForm';
+import { Link } from 'react-router-dom';
 
 const MateBoard = () => {
   return (
@@ -33,6 +34,13 @@ const MateBoard = () => {
           </li>
         ))}
       </ul>
+      <Link
+        to={'/write_post'}
+        state={{ boardType: 'mate' }}
+        className='absolute right-0 rounded-md bg-green mr-2 px-3 py-1.5 text-md font-semibold text-white shadow-sm hover:bg-hovergreen focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green'
+      >
+        글쓰기
+      </Link>
     </>
   );
 };
