@@ -35,6 +35,9 @@ function Board() {
           </li>
         ))}
       </ul>
+      <button className='absolute right-0 rounded-md bg-green mr-2 px-3 py-1.5 text-md font-semibold text-white shadow-sm hover:bg-hovergreen focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green'>
+        글쓰기
+      </button>
     </>
   );
 }

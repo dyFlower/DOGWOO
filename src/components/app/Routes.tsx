@@ -10,6 +10,8 @@ import SignUp from '../user/SignUp';
 import ResetPassword from '../user/ResetPassword';
 import EditProfile from '../user/EditProfile';
 import Info from '../info/Info';
+import Post from '../board/post/Post';
+import WritePost from '../board/post/WritePost';
 
 const Router = () => {
   return (
@@ -20,6 +22,7 @@ const Router = () => {
       <Route path='/board' element={<Board />}></Route>
       <Route path='/tipinfo' element={<TipInfo />}></Route>
       <Route path='/mate' element={<MateBoard />}></Route>
+      <Route path='/write_post' element={<WritePost />}></Route>
       <Route path='/signin' element={<SignIn />}></Route>
       <Route path='/signup' element={<SignUp />}></Route>
       <Route path='/reset' element={<ResetPassword />}></Route>
