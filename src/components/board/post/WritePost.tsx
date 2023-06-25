@@ -1,15 +1,21 @@
 import React, { useState } from 'react';
 import { auth, database } from '../../../firebase/firebase';
-import { ref, set } from 'firebase/database';
-import { useNavigate } from 'react-router-dom';
+import { child, push, ref, set } from 'firebase/database';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const WritePost = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const boardType = location.state?.boardType;
+
+  const newPostKey = push(child(ref(database), 'posts')).key;
+
   const handleUploadPost = () => {
     const user = auth.currentUser;
-    set(ref(database, 'board/' + 'free'), {
+    set(ref(database, `board/${boardType}/${newPostKey}`), {
       user: user?.uid,
       title: title,
       content: content,
