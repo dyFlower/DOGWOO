@@ -3,6 +3,7 @@ import SearchForm from '../common/SearchForm';
 import { Link } from 'react-router-dom';
 import { child, get, ref } from 'firebase/database';
 import { database } from '../../firebase/firebase';
+import { getTimegap } from './post/time';
 
 function Board() {
   const [posts, setPosts] = useState<any>([]);
@@ -73,7 +74,7 @@ function Board() {
               <div className='sm:flex sm:flex-col sm:items-end'>
                 {
                   <p className='mt-7 text-xs leading-5 text-gray-500'>
-                    <time>{post.time}</time>
+                    <time>{getTimegap(post.time)}</time>
                   </p>
                 }
               </div>
