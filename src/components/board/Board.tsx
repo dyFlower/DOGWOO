@@ -66,7 +66,7 @@ function Board() {
                     <p className='pl-1 text-sm leading-6 text-gray-900'>({petName})</p>
                   </div>
                   <p className='mt-1 font-semibold truncate text-md leading-5 text-gray-500'>
-                    {post.content}
+                    {post.title}
                   </p>
                 </div>
               </div>

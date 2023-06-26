@@ -67,7 +67,7 @@ function Board() {
                     <p className='pl-1 text-sm leading-6 text-gray-900'>({petName})</p>
                   </div>
                   <p className='mt-1 font-semibold truncate text-md leading-5 text-gray-500'>
-                    {post.content}
+                    {post.title}
                   </p>
                 </div>
               </div>
@@ -84,7 +84,7 @@ function Board() {
       </ul>
       <Link
         to={'/write_post'}
-        state={{ boardType: 'free' }}
+        state={{ boardType: 'mate' }}
         className='absolute right-0 rounded-md bg-green mr-2 px-3 py-1.5 text-md font-semibold text-white shadow-sm hover:bg-hovergreen focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green'
       >
         글쓰기
