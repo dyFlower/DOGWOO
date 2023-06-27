@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { child, get, ref } from 'firebase/database';
 import { database } from '../../firebase/firebase';
 import { getTimegap } from './post/time';
+import DefaultProfile from '../../assets/icons/DefaultProfile.png';
 
 function Board() {
   const [posts, setPosts] = useState<any>([]);
@@ -60,22 +61,24 @@ function Board() {
             const postNum = posts.length - id;
             return (
               <li key={id} className='flex justify-between gap-x-6 py-5'>
-                <Link to={`post/${postNum}`} className='flex gap-x-4'>
+                <Link
+                  to={`post/${postNum}`}
+                  state={{ postData: post, boardType: 'free' }}
+                  className='flex gap-x-4'
+                >
                   <img
-                    className='h-12 w-12 flex-none rounded-full bg-gray-50'
-                    // src={person.imageUrl}
-                    alt=''
+                    className='h-12 w-12 flex-none rounded-full bg-gray-300'
+                    src={DefaultProfile}
+                    alt='프로필 사진'
                   />
-                  <div className='min-w-0 flex-auto'>
+                  <div className='flex flex-col gap-y-1'>
                     <div className='flex'>
-                      <p className='text-sm font-bold leading-6 text-gray-900'>
+                      <p className='text-sm font-semibold leading-6 text-gray-900'>
                         {post.userData[0]}
                       </p>
                       <p className='pl-1 text-sm leading-6 text-gray-900'>({post.userData[1]})</p>
                     </div>
-                    <p className='mt-1 font-semibold truncate text-md leading-5 text-gray-500'>
-                      {post.title}
-                    </p>
+                    <p className='font-semibold truncate text-md leading-5'>{post.title}</p>
                   </div>
                 </Link>
                 <div className='sm:flex sm:flex-col sm:items-end'>
