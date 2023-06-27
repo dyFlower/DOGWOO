@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SearchForm from '../common/SearchForm';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { child, get, ref } from 'firebase/database';
 import { database } from '../../firebase/firebase';
 import { getTimegap } from './post/time';
@@ -8,6 +8,7 @@ import { getTimegap } from './post/time';
 function Board() {
   const [posts, setPosts] = useState<any>([]);
   const dbRef = ref(database);
+  const { id } = useParams();
 
   const readUser = async (userKey: any) => {
     try {
@@ -35,6 +36,7 @@ function Board() {
           const postUserData = postKeys.map((postKey, index) => ({
             ...postsData[postKey],
             userData: userData[index],
+            postKey: postKeys[index],
           }));
           setPosts(postUserData);
         } else {
@@ -54,10 +56,11 @@ function Board() {
       <ul role='list' className='divide-y divide-gray-200 m-5'>
         {Object.values(posts)
           .reverse()
-          .map((post: any) => {
+          .map((post: any, id: number) => {
+            const postNum = posts.length - id;
             return (
-              <li key={post.id} className='flex justify-between gap-x-6 py-5'>
-                <div className='flex gap-x-4'>
+              <li key={id} className='flex justify-between gap-x-6 py-5'>
+                <Link to={`post/${postNum}`} className='flex gap-x-4'>
                   <img
                     className='h-12 w-12 flex-none rounded-full bg-gray-50'
                     // src={person.imageUrl}
@@ -74,7 +77,7 @@ function Board() {
                       {post.title}
                     </p>
                   </div>
-                </div>
+                </Link>
                 <div className='sm:flex sm:flex-col sm:items-end'>
                   {
                     <p className='mt-7 text-xs leading-5 text-gray-500'>
