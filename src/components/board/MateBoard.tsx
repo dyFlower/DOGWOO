@@ -7,80 +7,85 @@ import { getTimegap } from './post/time';
 
 function Board() {
   const [posts, setPosts] = useState<any>([]);
-  const [nickName, setNickName] = useState<string>('');
-  const [petName, setPetName] = useState<string>('');
   const dbRef = ref(database);
 
-  const readUser = (userKey: any) => {
-    get(child(dbRef, `users/${userKey}`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          const { nickname, petname } = snapshot.val();
-          setNickName(nickname);
-          setPetName(petname);
-        } else {
-          console.log('No data available');
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const readUser = async (userKey: any) => {
+    try {
+      const snapshot = await get(child(dbRef, `users/${userKey}`));
+      if (snapshot.exists()) {
+        const { nickname, petname } = snapshot.val();
+        return [nickname, petname];
+      } else {
+        throw new Error('No data available');
+      }
+    } catch (error) {
+      throw error;
+    }
   };
 
   useEffect(() => {
-    get(child(dbRef, `board/mate`))
-      .then((snapshot) => {
+    const fetchData = async () => {
+      try {
+        const snapshot = await get(child(dbRef, `board/mate`));
         if (snapshot.exists()) {
-          const postsData = Object.values(snapshot.val()).reverse();
-          setPosts(postsData);
+          const postsData = snapshot.val();
+          const postKeys = Object.keys(postsData);
+          const promises = postKeys.map((postKey) => readUser(postsData[postKey].user));
+          const userData = await Promise.all(promises);
+          const postUserData = postKeys.map((postKey, index) => ({
+            ...postsData[postKey],
+            userData: userData[index],
+          }));
+          setPosts(postUserData);
         } else {
           console.log('No data available');
         }
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error(error);
-      });
-  }, [dbRef]);
+      }
+    };
 
-  useEffect(() => {
-    posts.forEach((post: any) => {
-      readUser(post.user);
-    });
-  }, [posts]);
+    fetchData();
+  }, [dbRef]);
 
   return (
     <>
       <SearchForm />
       <ul role='list' className='divide-y divide-gray-200 m-5'>
-        {posts.map((post: any) => {
-          return (
-            <li key={post.id} className='flex justify-between gap-x-6 py-5'>
-              <div className='flex gap-x-4'>
-                <img
-                  className='h-12 w-12 flex-none rounded-full bg-gray-50'
-                  // src={person.imageUrl}
-                  alt=''
-                />
-                <div className='min-w-0 flex-auto'>
-                  <div className='flex'>
-                    <p className='text-sm font-bold leading-6 text-gray-900'>{nickName}</p>
-                    <p className='pl-1 text-sm leading-6 text-gray-900'>({petName})</p>
+        {Object.values(posts)
+          .reverse()
+          .map((post: any) => {
+            return (
+              <li key={post.id} className='flex justify-between gap-x-6 py-5'>
+                <div className='flex gap-x-4'>
+                  <img
+                    className='h-12 w-12 flex-none rounded-full bg-gray-50'
+                    // src={person.imageUrl}
+                    alt=''
+                  />
+                  <div className='min-w-0 flex-auto'>
+                    <div className='flex'>
+                      <p className='text-sm font-bold leading-6 text-gray-900'>
+                        {' '}
+                        {post.userData[0]}
+                      </p>
+                      <p className='pl-1 text-sm leading-6 text-gray-900'>({post.userData[1]})</p>
+                    </div>
+                    <p className='mt-1 font-semibold truncate text-md leading-5 text-gray-500'>
+                      {post.title}
+                    </p>
                   </div>
-                  <p className='mt-1 font-semibold truncate text-md leading-5 text-gray-500'>
-                    {post.title}
-                  </p>
                 </div>
-              </div>
-              <div className='sm:flex sm:flex-col sm:items-end'>
-                {
-                  <p className='mt-7 text-xs leading-5 text-gray-500'>
-                    <time>{getTimegap(post.time)}</time>
-                  </p>
-                }
-              </div>
-            </li>
-          );
-        })}
+                <div className='sm:flex sm:flex-col sm:items-end'>
+                  {
+                    <p className='mt-7 text-xs leading-5 text-gray-500'>
+                      <time>{getTimegap(post.time)}</time>
+                    </p>
+                  }
+                </div>
+              </li>
+            );
+          })}
       </ul>
       <Link
         to={'/write_post'}
