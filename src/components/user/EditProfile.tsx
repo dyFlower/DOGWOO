@@ -1,14 +1,41 @@
 import { set, ref, child, get } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth, database } from '../../firebase/firebase';
+import { auth, database, storage, storageRef } from '../../firebase/firebase';
+import DefaultProfile from '../../assets/icons/DefaultProfile.png';
+import { uploadBytes } from 'firebase/storage';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
   const [nickName, setNickName] = useState('');
   const [petName, setPetName] = useState('');
+  const [photo, setPhoto] = useState('');
+  const [photoUrl, setPhotoUrl] = useState('');
   const navigate = useNavigate();
   const user = auth.currentUser?.uid;
+
+  const handleEditProfile = () => {
+    const user = auth.currentUser;
+    set(ref(database, 'users/' + user?.uid), {
+      email: email,
+      nickname: nickName,
+      petname: petName,
+      photo: photoUrl,
+    })
+      .then(() => {
+        navigate('/');
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
+  };
+  const fileRead = (e: any) => {
+    const file = e.target.files[0];
+    const spaceRef = storageRef(storage, `images/${auth.currentUser?.uid}}`);
+    uploadBytes(spaceRef, file);
+  };
 
   useEffect(() => {
     const dbRef = ref(database);
@@ -27,31 +54,9 @@ const EditProfile = () => {
       });
   }, []);
 
-  const handleEditProfile = () => {
-    const user = auth.currentUser;
-    set(ref(database, 'users/' + user?.uid), {
-      email: email,
-      nickname: nickName,
-      petname: petName,
-    })
-      .then(() => {
-        navigate('/');
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
-      });
-  };
   return (
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
-        <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
-          <h2 className='mt-10 text-center text-4xl font-bold leading-9 tracking-tight text-green'>
-            DOGWOO
-          </h2>
-        </div>
-
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
           <form
             className='space-y-3'
@@ -61,6 +66,27 @@ const EditProfile = () => {
               handleEditProfile();
             }}
           >
+            <div className='flex flex-col justify-center items-center'>
+              <img
+                src={DefaultProfile}
+                alt='프로필 사진'
+                className='rounded-full h-1/3 w-1/3 bg-gray-200'
+              />
+              <label
+                htmlFor='photo'
+                className='flex w-1/3 justify-center rounded-md bg-green mt-3 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-hovergreen focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green'
+              >
+                <div>프로필 사진 수정</div>
+              </label>
+              <input
+                onChange={(e) => fileRead(e)}
+                type='file'
+                name='photo'
+                id='photo'
+                className='hidden'
+              />
+            </div>
+
             <div>
               <label
                 htmlFor='nickname'
@@ -120,7 +146,7 @@ const EditProfile = () => {
                 type='submit'
                 className='flex w-full justify-center rounded-md bg-green mt-10 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-hovergreen focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green'
               >
-                프로필 수정
+                수정 완료
               </button>
             </div>
           </form>
