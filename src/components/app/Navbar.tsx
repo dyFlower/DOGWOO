@@ -6,11 +6,13 @@ import { Disclosure, Menu, Popover, Transition } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import useWeather from '../weather/useWeather';
 import { translateWeather } from '../weather/translate';
-import { auth } from '../../firebase/firebase';
+import { auth, storage, storageRef } from '../../firebase/firebase';
+import { getDownloadURL } from 'firebase/storage';
 
 const Navbar = () => {
   const location = useLocation();
   const [currentPage, setCurrentPage] = useState('');
+  const [photo, setPhoto] = useState('');
   const navigate = useNavigate();
   const navigation = [
     { name: '자유 게시판', link: '/board' },
@@ -20,7 +22,24 @@ const Navbar = () => {
 
   useEffect(() => {
     setCurrentPage(location.pathname);
+    const user = auth.currentUser?.uid;
+    const imageRef = storageRef(storage, `images/${user}}`);
+    if (user) {
+      getDownloadURL(imageRef).then((photoUrl) => {
+        setPhoto(photoUrl);
+      });
+    }
   }, [location.pathname]);
+
+  useEffect(() => {
+    const user = auth.currentUser?.uid;
+    if (user) {
+      const imageRef = storageRef(storage, `images/${user}}`);
+      getDownloadURL(imageRef).then((photoUrl) => {
+        setPhoto(photoUrl);
+      });
+    }
+  }, [auth.currentUser?.uid]);
 
   function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ');
@@ -131,11 +150,7 @@ const Navbar = () => {
                     <div>
                       <Menu.Button className='flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
                         <span className='sr-only'>프로필 정보 열기</span>
-                        <img
-                          className='h-8 w-8 rounded-full'
-                          src={DefaultProfile}
-                          alt='프로필 사진'
-                        />
+                        <img className='h-8 w-8 rounded-full' src={photo} alt='프로필 사진' />
                       </Menu.Button>
                     </div>
                     <Transition
