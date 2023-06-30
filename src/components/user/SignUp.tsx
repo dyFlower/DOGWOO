@@ -1,8 +1,9 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth, database } from '../../firebase/firebase';
+import { auth, database, storage, storageRef } from '../../firebase/firebase';
 import { ref, set } from 'firebase/database';
+import { getDownloadURL, uploadBytes } from 'firebase/storage';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
@@ -11,15 +12,39 @@ const SignUp = () => {
   const [petName, setPetName] = useState('');
   const navigate = useNavigate();
 
+  async function convertUrlToBlob(url: any) {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const contentType = response.headers.get('content-type');
+    if (contentType) {
+      return new Blob([blob], { type: contentType });
+    } else {
+      throw new Error('Content type is null.');
+    }
+  }
+
   const handleSignUp = (email: string, password: string) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(() => {
-        const user = auth.currentUser;
-        set(ref(database, 'users/' + user?.uid), {
+        const user = auth.currentUser?.uid;
+        set(ref(database, 'users/' + user), {
           email: email,
           nickname: nickName,
           petname: petName,
         });
+      })
+      .then(() => {
+        const user = auth.currentUser?.uid;
+        const userRef = storageRef(storage, `images/${user}}`);
+        const imageRef = storageRef(storage, 'Default_Profile.png');
+        getDownloadURL(imageRef)
+          .then((url) => {
+            console.log(url);
+            return convertUrlToBlob(url);
+          })
+          .then((blob) => {
+            uploadBytes(userRef, blob);
+          });
       })
       .then(() => {
         navigate('/');
@@ -27,9 +52,9 @@ const SignUp = () => {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        // ..
       });
   };
+
   return (
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
