@@ -1,12 +1,7 @@
 import { Link } from 'react-router-dom';
 import HomeBg from '../../assets/image/HomeBg.jpg';
-import { auth } from '../../firebase/firebase';
 
 function Home() {
-  function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ');
-  }
-  console.log(auth.currentUser);
   return (
     <>
       <img className='bg-center absolute -z-10' src={HomeBg} alt='배경화면' />
@@ -28,10 +23,12 @@ function Home() {
             도시공원, 체육공원, 동물병원, 동물약국, 보호센터 등
           </span>
           <span className='font-bold text-md'>반려 동물을 위한 지역 생활정보</span>
-          <span className='text-2xl font-bold text-green hover:text-hovergreen sm:inline block'>
-            {' '}
+          <Link
+            to='/info'
+            className='text-2xl font-bold text-green hover:text-hovergreen sm:inline block'
+          >
             검색하러 가기
-          </span>
+          </Link>
         </Link>
       </div>
     </>

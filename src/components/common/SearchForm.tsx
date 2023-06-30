@@ -6,8 +6,6 @@ const SearchForm = () => {
     setSearchOption(e.target.value);
   };
 
-  console.log(searchOption);
-
   return (
     <div>
       <div className='relative m-3 rounded-md shadow-sm'>
