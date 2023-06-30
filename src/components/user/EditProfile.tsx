@@ -2,25 +2,21 @@ import { set, ref, child, get } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, database, storage, storageRef } from '../../firebase/firebase';
-import DefaultProfile from '../../assets/icons/DefaultProfile.png';
-import { uploadBytes } from 'firebase/storage';
+import { getDownloadURL, uploadBytes } from 'firebase/storage';
 
 const EditProfile = () => {
   const [email, setEmail] = useState('');
   const [nickName, setNickName] = useState('');
   const [petName, setPetName] = useState('');
-  const [photo, setPhoto] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
   const navigate = useNavigate();
   const user = auth.currentUser?.uid;
 
   const handleEditProfile = () => {
-    const user = auth.currentUser;
-    set(ref(database, 'users/' + user?.uid), {
+    set(ref(database, 'users/' + user), {
       email: email,
       nickname: nickName,
       petname: petName,
-      photo: photoUrl,
     })
       .then(() => {
         navigate('/');
@@ -33,22 +29,37 @@ const EditProfile = () => {
   };
   const fileRead = (e: any) => {
     const file = e.target.files[0];
-    const spaceRef = storageRef(storage, `images/${auth.currentUser?.uid}}`);
-    uploadBytes(spaceRef, file);
+    const imageRef = storageRef(storage, `images/${user}}`);
+    const uploadTask = uploadBytes(imageRef, file);
+    uploadTask.then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((downloadURL) => {
+        console.log(downloadURL);
+        setPhotoUrl(downloadURL);
+      });
+    });
   };
 
   useEffect(() => {
     const dbRef = ref(database);
-    get(child(dbRef, `users/${user}`))
-      .then((snapshot) => {
-        if (snapshot.exists()) {
-          setNickName(snapshot.val().nickname);
-          setPetName(snapshot.val().petname);
-          setEmail(snapshot.val().email);
-        } else {
-          console.log('No data available');
-        }
+    const imageRef = storageRef(storage, `images/${user}}`);
+    getDownloadURL(imageRef)
+      .then((photoUrl) => {
+        get(child(dbRef, `users/${user}`))
+          .then((snapshot) => {
+            if (snapshot.exists()) {
+              setNickName(snapshot.val().nickname);
+              setPetName(snapshot.val().petname);
+              setEmail(snapshot.val().email);
+              setPhotoUrl(photoUrl);
+            } else {
+              console.log('No data available');
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
       })
+
       .catch((error) => {
         console.error(error);
       });
@@ -68,9 +79,9 @@ const EditProfile = () => {
           >
             <div className='flex flex-col justify-center items-center'>
               <img
-                src={DefaultProfile}
+                src={photoUrl}
                 alt='프로필 사진'
-                className='rounded-full h-1/3 w-1/3 bg-gray-200'
+                className='rounded-full h-44 mb-6 aspect-square'
               />
               <label
                 htmlFor='photo'
