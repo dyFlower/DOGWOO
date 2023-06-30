@@ -23,7 +23,7 @@ const WritePost = () => {
       // photo: photoUrl,
     })
       .then(() => {
-        navigate('/');
+        navigate(-1);
       })
       .catch((error) => {
         const errorCode = error.code;
